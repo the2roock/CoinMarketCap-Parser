@@ -60,4 +60,3 @@ with open("data/top_tokens_by_marketcap.json", "wt") as file:
     
 print(f"Parsing ends. There are {len(tokens)} tokens.")
 ```
-Parsing ends. There are 999 tokens.
