@@ -11,4 +11,6 @@ pages: int - count of top pages user is interested in
 - Programmable browser using
 - BeautifulSoup4
 ## Output
-A JSON file includes tokens` data. There are Name, Price, Market Cap, Volume object`s propetry. By default the data is sorted by Market Cap.
+A JSON file includes tokens` data. There are Name, Symbol, Link, CoinMarketCap ID, Market Cap object`s propetry. By default the data is sorted by Market Cap.
+## Understanding Page Source
+[HTML Data Positions](https://github.com/the2roock/CoinMarketCap-Parser/blob/main/Understanding%20Page%20Source.png?raw=true)
