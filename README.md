@@ -48,15 +48,18 @@ parser = CoinMarketCapParser()
 ```python
 tokens = list()
 for page in range(1, pages+1):
-    parser.open_page(page)
-    tokens.extend(parser.get_list_of_tokens())
+    if parser.open_page(page):
+        tokens.extend(parser.get_list_of_tokens())
+    else:
+        print(f"Skipping page {page} due to error.")
 print(tokens[:5]) # Displaying the first 5 tokens for preview
 ```
 
-### 4. Save data in file.
+### 4. Save tokens to JSON file.
 ```python
-with open("data/top_tokens_by_marketcap.json", "wt") as file:
+filename = "data/top_tokens_by_marketcap.json"
+with open(filename, "wt") as file:
     json.dump(tokens, file, indent=4)
     
-print(f"Parsing ends. There are {len(tokens)} tokens.")
+print(f"Parsing completed. Total tokens parsed: {len(tokens)}.")
 ```

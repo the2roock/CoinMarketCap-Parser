@@ -9,29 +9,48 @@ from utils import create_driver
 
 class CoinMarketCapParser():
     def __init__(self) -> None:
+        """Initialize browser driver and default URL."""
         self.driver = create_driver()
-        self.url = "https://coinmarketcap.com/?page={page}"
+        self.url_template = "https://coinmarketcap.com/?page={page}"
 
     def open_page(self, page: int) -> bool:
+        """Open the specified page number.
+
+        Args:
+            page (int): Page number to open.
+
+        Returns:
+            bool: True if page opened successfully, False otherwise.
+        """
         try:
-            self.driver.get(self.url.format(page=page))
+            self.driver.get(self.url_template.format(page=page))
             self.driver.implicitly_wait(2)
             return True
         except Exception as e:
-            print(f"Cannot open page: {self.url.format(page=page)}. The reason is: {e}")
+            print(f"Failed to open page: {self.url_template.format(page=page)}. Error: {e}")
             return False
     
-    def get_list_of_tokens(self) -> dict:
+    def get_list_of_tokens(self) -> list:
+        """Scrape tokens` data from the currently opened page.
+
+        Returns:
+            list: List of token dictionaries
+        """
+        # Scroll down for page loading
         for _ in range(10):
             self.driver.find_element(By.TAG_NAME, "html").send_keys(Keys.PAGE_DOWN)
             
+        # Extract page HTML
         soup = BeautifulSoup(self.driver.page_source, "lxml")
+        
+        # Extract table content
         table = soup.find('table', attrs={"class": "cmc-table"}).find("tbody")
         if not table:
             return []
         
         tokens = list()
         
+        # Parse tokens
         for tr in table.find_all('tr'):
             token_td = tr.find_all("td")[2]
             try:
@@ -73,11 +92,16 @@ if __name__ == "__main__":
     pages = 10
     parser = CoinMarketCapParser()
     tokens = list()
-    for page in range(1, pages+1):
-        parser.open_page(page)
-        tokens.extend(parser.get_list_of_tokens())
     
-    with open("data/top_tokens_by_marketcap.json", "wt") as file:
+    for page in range(1, pages+1):
+        if parser.open_page(page):
+            tokens.extend(parser.get_list_of_tokens())
+        else:
+            print(f"Skipping page {page} due to error.")
+        
+    # Save tokens to JSON file
+    filename = "data/top_tokens_by_marketcap.json"
+    with open(filename, "wt") as file:
         json.dump(tokens, file, indent=4)
         
-    print(f"Parsing ends. There are {len(tokens)} tokens.")
+    print(f"Parsing completed. Total tokens parsed: {len(tokens)}.")
