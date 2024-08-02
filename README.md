@@ -11,4 +11,4 @@ pages: int - count of top pages user is interested in
 - Programmable browser using
 - BeautifulSoup4
 ## Output
-A CSV file includes tokens` data. There are Name, Price, Market Cap, Volume columns. By default the data is sorted by Market Cap.
+A JSON file includes tokens` data. There are Name, Price, Market Cap, Volume object`s propetry. By default the data is sorted by Market Cap.
